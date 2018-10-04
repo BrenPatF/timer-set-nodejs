@@ -1,0 +1,24 @@
+{
+  "name": "timer-set",
+  "version": "1.0.0",
+  "description": "Code timing class",
+  "homepage": "https://github.com/BrenPatF/timer-set_nodejs#readme",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/BrenPatF/timer-set_nodejs.git"
+  },
+  "scripts": {
+    "test": "node test/test-timer-set"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "trapit": "^1.0.0"
+  },
+  "keywords": [
+    "timing",
+    "instrumentation",
+    "cpu"
+  ],
+  "author": "Brendan Furey",
+  "license": "ISC"
+}
