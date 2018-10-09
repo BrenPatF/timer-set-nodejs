@@ -35,7 +35,7 @@ $ node examples\col-group\main-col-group
 const Utils = require('../../lib/utils');
 const ColGroup = require('./col-group');
 const TimerSet = require('../../lib/timer-set'); //NB To use trapit as npm module: require('timer-set');
-const [INPUT_FILE, 													   DELIM, COL] = 
+const [INPUT_FILE, 													                           DELIM, COL] = 
       ['./examples/col-group/fantasy_premier_league_player_stats.csv', ',',   6];
 
 const tsColGroup = new TimerSet('ColGroup Timers');
