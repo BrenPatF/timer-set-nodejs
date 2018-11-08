@@ -33,7 +33,7 @@ $ npm test
 "use strict";
 const Trapit = require('trapit');
 const Utils = require('../lib/utils');
-const TimerSet = require('../lib/timer-set');
+const TimerSet = require('timer-set');
 const fs = require('fs');
 const ROOT = './test/';
 const INPUT_JSON = ROOT + 'timer-set.json';
