@@ -59,7 +59,7 @@ class ColGroup {
     this.delim = delim;
     this.col = col;
     this.counter = readList(file, delim, col);
-    this.maxLen = Utils.maxLen (this.counter);
+    this.maxLen = Utils.maxLen(this.counter);
   }
   /***************************************************************************************************
 

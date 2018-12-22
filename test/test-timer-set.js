@@ -33,7 +33,7 @@ $ npm test
 "use strict";
 const Trapit = require('trapit');
 const Utils = require('../lib/utils');
-const TimerSet = require('timer-set');
+const TimerSet = require('../lib/timer-set'); // for npm package usage, use 'timer-set' instead
 const fs = require('fs');
 const ROOT = './test/';
 const INPUT_JSON = ROOT + 'timer-set.json';
@@ -46,9 +46,15 @@ const [TIMER_SET_1, TIMER_SET_1_F,       TIMER_SET_2, TIMER_SET_2_F] =
       ["Set 1",     "Set 1 (formatted)", "Set 2",     "Set 2 (formatted)"];
 const [SELF_GRP,          SELF_GRP_F,                   RES_GRP,   EXCEPTION] = 
       ["Self (unmocked)", "Self (unmocked, formatted)", "Results", "Exception"];
-const testData = Trapit.getUTData(INPUT_JSON);
-const [meta, callScenarios] = [testData.meta, testData.scenarios];
-function purelyWrapUnit(callScenario) {
+/**************************************************************************************************
+
+purelyWrapUnit: Unit test wrapper function. This is called within a loop over input scenarios, 
+    returning an object that includes the input object and has the actual program outputs
+    inserted
+
+**************************************************************************************************/
+function purelyWrapUnit(callScenario) {// json object for a single scenario, with inputs and
+                                       // expected outputs
 
   const [mock_yn, timeWidth, dpTotals, dpPerCall, callsWidth] = 
         [...Utils.csvToLis(callScenario.inp[SCALARS][0]).map(v => v === '' ? undefined : v)];
@@ -70,46 +76,32 @@ function purelyWrapUnit(callScenario) {
   }
   let [outArr, outArrF, exceptions, selfTimer, selfTimerF, results] = 
   [{[TIMER_SET_1]: [], [TIMER_SET_2]: []}, {[TIMER_SET_1]: [], [TIMER_SET_2]: []}, [], [], [], []];
-  for (const i in events) {
-    const eLis = Utils.csvToLis(events[i]);
-    const [setNm, timerNm, event, sleepTime, ela, usr, sys] = [...eLis];
+  for (const eventCsv of events) {
+    const eLis = Utils.csvToLis(eventCsv);
+    const [setNm, timerNm, event, sleepTime] = [...eLis];
     if (mock_yn != 'Y') Utils.sleep(sleepTime);
-    switch(event) {
-      case CON:
-        if (mock_yn === 'Y') {
-          timerSet[setNm] = new TimerSet(setNm, now, cpus);
-        } else {
-          timerSet[setNm] = new TimerSet(setNm);
-        }
-        break;
-      case INC:
-        timerSet[setNm].incrementTime(timerNm);
-        break;
-      case INI:
-        timerSet[setNm].initTime();
-        break;
-      case GET:
-        outArr[setNm] = timerSet[setNm].getTimers().map(t => Object.values(t).join(DELIM));
-        break;
-      case GETF:
-        try {
-          outArrF[setNm] = timerSet[setNm].formatTimers(timeWidth, dpTotals, dpPerCall, callsWidth);
-        } catch(e) {
-          exceptions[0] = e.message;
-          exceptions[1] = e.stack;
-        }
-        break;
-      case SELF:
-        selfTimer = [Object.values(TimerSet.getSelfTimer()).join(DELIM)];
-        break;
-      case SELFF:
-        selfTimerF = [TimerSet.formatSelfTimer()];
-        break;
-      case RES:
-        results = [timerSet[setNm].formatResults()];
-        break;
-      default:
-        throw `Error event ${event} not known`;
+    if (event == CON) {
+      timerSet[setNm] = (mock_yn === 'Y') ? new TimerSet(setNm, now, cpus) : new TimerSet(setNm);
+    } else if (event == INC) {
+      timerSet[setNm].incrementTime(timerNm);
+    } else if (event == INI) {
+      timerSet[setNm].initTime();
+    } else if (event == GET) {
+      outArr[setNm] = timerSet[setNm].getTimers().map(t => Object.values(t).join(DELIM));
+    } else if (event == GETF) {
+      try {
+        outArrF[setNm] = timerSet[setNm].formatTimers(timeWidth, dpTotals, dpPerCall, callsWidth);
+      } catch(e) {
+        exceptions = [e.message, e.stack]
+      }
+    } else if (event == SELF) {
+      selfTimer = [Object.values(TimerSet.getSelfTimer()).join(DELIM)];
+    } else if (event == SELFF) {
+      selfTimerF = [TimerSet.formatSelfTimer()];
+    } else if (event == RES) {
+      results = [timerSet[setNm].formatResults()];
+    } else {
+      throw `Error event ${event} not known`;
     }
   }
   return {
@@ -150,6 +142,17 @@ function purelyWrapUnit(callScenario) {
       }
   };
 }
+/***************************************************************************************************
+
+Testing main section: 
+    Read test input data from json file as object with meta and (call) scenarios objects
+    Loop over scenarios passing in the calling scenario to the wrapper function, and assigning
+        return value to the (augmented) scenarios object element for the current scenario
+    Call trapit function to write test results, passing in the full augmented scenarios object with
+        the metadata
+***************************************************************************************************/
+const testData = Trapit.getUTData(INPUT_JSON);
+const [meta, callScenarios] = [testData.meta, testData.scenarios];
 
 let scenarios = [];
 for (const s in callScenarios) {

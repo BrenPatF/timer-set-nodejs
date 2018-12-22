@@ -12,7 +12,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "trapit": "^1.0.0"
+    "trapit": "^1.0.4"
   },
   "keywords": [
     "timing",

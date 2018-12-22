@@ -1,5 +1,5 @@
 # timer-set
-Facilitates code timing for instrumentation and other purposes, with very small footprint in both code and resource usage. Tested on Unix and Windows.
+Facilitates code timing for instrumentation and other purposes, with very small footprint in both code and resource usage. Construction and reporting require only a single line each, regardless of how many timers are included in a set. Tested on Unix and Windows.
 
 ## Usage (extract from main-col-group.js)
 ```js
@@ -109,7 +109,7 @@ The wrapper function represents a generalised transactional use of the package i
 This kind of package would usually be thought hard to unit-test, with CPU and elapsed times being inherently non-deterministic. However, this is a good example of the power of the design pattern that I recently introduced: One of the inputs is a yes/no flag indicating whether to mock the system timing calls, or not. The function calls used to return epochal CPU and elapsed times are actually parameters that take the (Windows) system functions as defaults, while in the mocked case deterministic versions are supplied by the test driver, that read the values to return from the input scenario data. In this way we can test correctness of the timing aggregations, independence of timer sets etc. using the deterministic functions; on the other hand, one of the key benefits of automated unit testing is to test the actual dependencies, and we do this in the non-mocked case by passing in 'sleep' times to the wrapper function and testing the outputs against ranges of values.
 
 ## Operating Systems
-The package works on both Unix and Wndows and has been tested on:
+The package works on both Unix and Windows and has been tested on:
 ### Windows
 Windows 10, node v8.1.4 and node v10.6.0
 ### Unix
@@ -117,6 +117,8 @@ Oracle Linux Server 7.5 (via Virtualbox on Windows host), node v8.12.0
 
 ## See also
 - [trapit (unit testing package)](https://github.com/BrenPatF/trapit_nodejs_tester)
+- [Javascript timer-set package on GitHub](https://github.com/BrenPatF/timer-set-nodejs)
+- [Code Timing and Object Orientation and Zombies, Brendan Furey, November 2010](http://www.scribd.com/doc/43588788/Code-Timing-and-Object-Orientation-and-Zombies)
 
 ## License
 ISC

@@ -34,8 +34,8 @@ $ node examples\col-group\main-col-group
 "use strict";
 const Utils = require('../../lib/utils');
 const ColGroup = require('./col-group');
-const TimerSet = require('timer-set');
-const [INPUT_FILE, 													                           DELIM, COL] = 
+const TimerSet = require('../../lib/timer-set'); // for npm package usage, use 'timer-set' instead
+const [INPUT_FILE, 													   DELIM, COL] = 
       ['./examples/col-group/fantasy_premier_league_player_stats.csv', ',',   6];
 
 const tsColGroup = new TimerSet('ColGroup Timers');
