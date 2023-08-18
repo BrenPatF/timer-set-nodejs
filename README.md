@@ -16,7 +16,9 @@ tsColGroup.incrementTime('sortByValue');
 
 console.log(tsColGroup.formatResults());
 ```
+
 This will create a timer set and time the sections, with listing at the end:
+
 ```
 Timer set: ColGroup Timers, constructed at Mon Oct 01 2018 14:25:38, written at Mon Oct 01 2018 14:25:38
 ========================================================================================================
@@ -32,6 +34,7 @@ Total              0.24        0.03        0.05           5        0.04800      
 -----------  ----------  ----------  ----------  ----------  -------------  -------------  -------------
 [Timer timed (per call in ms): Elapsed: 0.16832, USR: 0.00000, SYS: 0.01856]
 ```
+
 To run the example from root (timer-set) folder:
 
 ### Unix
