@@ -35,7 +35,7 @@ const Trapit = require('trapit');
 const Utils = require('../lib/utils');
 const TimerSet = require('../lib/timer-set'); // for npm package usage, use 'timer-set' instead
 const fs = require('fs');
-const ROOT = './test/';
+const ROOT = __dirname + '/';
 const INPUT_JSON = ROOT + 'timer-set.json';
 
 const DELIM = '|';
@@ -53,12 +53,11 @@ purelyWrapUnit: Unit test wrapper function. This is called within a loop over in
     inserted
 
 **************************************************************************************************/
-function purelyWrapUnit(callScenario) {// json object for a single scenario, with inputs and
-                                       // expected outputs
+function purelyWrapUnit(inpGroups) {// input groups object
 
   const [mock_yn, timeWidth, dpTotals, dpPerCall, callsWidth] = 
-        [...Utils.csvToLis(callScenario.inp[SCALARS][0]).map(v => v === '' ? undefined : v)];
-  const events = callScenario.inp[EVENT_SEQUENCE];
+        [...Utils.csvToLis(inpGroups[SCALARS][0]).map(v => v === '' ? undefined : v)];
+  const events = inpGroups[EVENT_SEQUENCE];
   const times = events.map(e => Utils.csvToLis(e));
   let timerSet = {};
   let counter_n = 0; 
@@ -105,60 +104,15 @@ function purelyWrapUnit(callScenario) {// json object for a single scenario, wit
     }
   }
   return {
-      inp: callScenario.inp,
-      out: {
-              [TIMER_SET_1] : {
-                  exp: callScenario.out[TIMER_SET_1], 
-                  act: outArr[TIMER_SET_1]
-              },
-              [TIMER_SET_1_F] : {
-                  exp: callScenario.out[TIMER_SET_1_F],
-                  act: outArrF[TIMER_SET_1]
-              },
-              [TIMER_SET_2] : {
-                  exp: callScenario.out[TIMER_SET_2], 
-                  act: outArr[TIMER_SET_2]
-              },
-              [TIMER_SET_2_F] : {
-                  exp: callScenario.out[TIMER_SET_2_F],
-                  act: outArrF[TIMER_SET_2]
-              },
-              [SELF_GRP] : {
-                  exp: callScenario.out[SELF_GRP],
-                  act: selfTimer
-              },
-              [SELF_GRP_F] : {
-                  exp: callScenario.out[SELF_GRP_F],
-                  act: selfTimerF
-              },
-              [RES_GRP] : {
-                  exp: callScenario.out[RES_GRP],
-                  act: results
-              },
-              [EXCEPTION] : {
-                  exp: callScenario.out[EXCEPTION],
-                  act: exceptions
-              }
-      }
+              [TIMER_SET_1] : outArr[TIMER_SET_1],
+              [TIMER_SET_1_F] : outArrF[TIMER_SET_1],
+              [TIMER_SET_2] : outArr[TIMER_SET_2],
+              [TIMER_SET_2_F] : outArrF[TIMER_SET_2],
+              [SELF_GRP] : selfTimer,
+              [SELF_GRP_F] : selfTimerF,
+              [RES_GRP] : results,
+              [EXCEPTION] : exceptions
   };
 }
-/***************************************************************************************************
 
-Testing main section: 
-    Read test input data from json file as object with meta and (call) scenarios objects
-    Loop over scenarios passing in the calling scenario to the wrapper function, and assigning
-        return value to the (augmented) scenarios object element for the current scenario
-    Call trapit function to write test results, passing in the full augmented scenarios object with
-        the metadata
-***************************************************************************************************/
-const testData = Trapit.getUTData(INPUT_JSON);
-const [meta, callScenarios] = [testData.meta, testData.scenarios];
-
-let scenarios = [];
-for (const s in callScenarios) {
-  if (!(callScenarios[s].enabled_yn === 'N')) { // optional in input json
-    scenarios[s] = purelyWrapUnit(callScenarios[s]);
-  }
-};
-
-Trapit.prUTResultsTextAndHTML(meta, scenarios, ROOT);
+Trapit.fmtTestUnit(INPUT_JSON, ROOT, purelyWrapUnit);
