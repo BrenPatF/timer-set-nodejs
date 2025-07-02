@@ -1,6 +1,6 @@
 {
   "name": "timer-set",
-  "version": "1.0.5",
+  "version": "1.0.9",
   "description": "Code timing class",
   "homepage": "https://github.com/BrenPatF/timer-set_nodejs#readme",
   "repository": {
@@ -12,7 +12,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "trapit": "^1.0.4"
+    "trapit": "^1.0.22"
   },
   "keywords": [
     "timing",
